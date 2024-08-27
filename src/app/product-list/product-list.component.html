@@ -1,5 +1,6 @@
 <div class="ekart--product--container">
-    <img [src]="product.imageUrl">
+    <app-search></app-search>
+    <!-- <img [src]="product.imageUrl">
     <p>Name:{{product.name}}</p>
     <p>Price:{{product.flavor}}</p>
     <p>Ingredient:{{product.mainIngredient}}</p>
@@ -8,6 +9,6 @@
     <button (click)="decreamentValue()">-</button>
     <span>{{addToCart}}</span>
     <button (click)="increamentValue()">+</button> 
-    <!-- <input [value]="name" (input)="onNameChange($event)"><br> 
+    <input [value]="name" (input)="onNameChange($event)"><br> 
     <p>The user is: {{name}}</p> -->
 </div>
