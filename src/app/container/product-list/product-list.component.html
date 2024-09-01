@@ -1,17 +1,10 @@
+<app-filter [all]='totalProduct'
+            [inStock]="totalInStock"
+            [outOfStock]="totalOutOfStock"
+            (selectedFilterRadioButtonChanged)="onFilterChanged($event)"></app-filter>
 <div class="ekart-product-list-container">
-    <div class="ekart-product-item" *ngFor="let prod of products">
-        <div class="ekart-wishlist-sale-container">
-            <div class="ekart-add-to-wishlist">
-                <i class="fa fa-heart-o" aria-hidden="true"></i>
-            </div>
-            <div class="ekart-product-image">
-                <img [src]="prod.image_url" class="ekart-product-image">
-            </div>
-            <div class="ekart-product-name">{{prod.name}}</div>
-            <div class="ekart-product-items-left">Items in stock:{{prod.items_left}}</div>
-            <div class="ekart-product-flavour">{{prod.flavour}}</div>
-            <div class="ekart-product-origin">{{prod.origin}}</div>
-            <div class="ekart-product-packaging">{{prod.packaging[0]}}</div>
-        </div>
+    <div *ngFor="let prod of products">
+        <app-product [product]="prod" *ngIf="selectedFilterRadioButton==='all' || prod.is_in_inventory.toString() === selectedFilterRadioButton"></app-product>
     </div>
+    
 </div>

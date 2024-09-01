@@ -10,7 +10,6 @@ type Product = {
   items_left: number;
   packaging: string[];
 };
-
 @Component({
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
@@ -186,4 +185,15 @@ products: Product[] = [
   }
 ];
 
+totalProduct=this.products.length
+totalInStock=this.products.filter(p=>p.is_in_inventory===true).length
+totalOutOfStock=this.products.filter(p=>p.is_in_inventory===false).length
+
+selectedFilterRadioButton: string = 'all'
+
+onFilterChanged(value:string){
+  console.log(value);
+  this.selectedFilterRadioButton = value
+  
+}
 }
