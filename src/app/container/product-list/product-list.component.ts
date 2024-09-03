@@ -1,3 +1,4 @@
+import { Input } from '@angular/core';
 import { Component } from '@angular/core';
 type Product = {
   id: number;
@@ -190,6 +191,8 @@ totalInStock=this.products.filter(p=>p.is_in_inventory===true).length
 totalOutOfStock=this.products.filter(p=>p.is_in_inventory===false).length
 
 selectedFilterRadioButton: string = 'all'
+@Input()
+searchText:string =''
 
 onFilterChanged(value:string){
   console.log(value);

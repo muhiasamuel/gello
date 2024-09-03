@@ -1,5 +1,5 @@
 <div class="ekart--product--container">
-    <app-search></app-search>
+    <app-search (searchtextChanged)="setSearchText($event)"></app-search>
     <!-- <img [src]="product.imageUrl">
     <p>Name:{{product.name}}</p>
     <p>Price:{{product.flavor}}</p>
@@ -11,5 +11,5 @@
     <button (click)="increamentValue()">+</button> 
     <input [value]="name" (input)="onNameChange($event)"><br> 
     <p>The user is: {{name}}</p> -->
-    <app-product-list></app-product-list>
+    <app-product-list [searchText]="searchText"></app-product-list>
 </div>
