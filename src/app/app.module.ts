@@ -13,6 +13,9 @@ import { FormsModule } from '@angular/forms';
 import { ProductListComponent } from './container/product-list/product-list.component';
 import { ProductComponent } from './container/product-list/product/product.component';
 import { FilterComponent } from './container/product-list/filter/filter.component';
+import { ProductDetailsComponent } from './container/product-details/product-details.component';
+import { SetBackgroundDirective } from './container/product-details/set-background.directive';
+import { HighlightsDirective } from './container/product-details/highlights.directive';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,10 @@ import { FilterComponent } from './container/product-list/filter/filter.componen
     SearchComponent,
     ProductListComponent,
     ProductComponent,
-    FilterComponent
+    FilterComponent,
+    ProductDetailsComponent,
+    SetBackgroundDirective,
+    HighlightsDirective
   ],
   imports: [
     BrowserModule,

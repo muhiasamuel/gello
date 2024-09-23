@@ -1,16 +1,7 @@
 import { Input } from '@angular/core';
 import { Component } from '@angular/core';
-type Product = {
-  id: number;
-  name: string;
-  flavour: string;
-  origin: string;
-  main_ingredient: string;
-  image_url: string;
-  is_in_inventory: boolean;
-  items_left: number;
-  packaging: string[];
-};
+import { Product} from './../../Modals/Product'
+
 @Component({
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
@@ -18,7 +9,8 @@ type Product = {
 })
 export class ProductListComponent {
 
-products: Product[] = [
+  selectedProduct!: Product;
+products = [
   {
     id: 1,
     name: "Strawberry Delight",
@@ -191,6 +183,7 @@ totalInStock=this.products.filter(p=>p.is_in_inventory===true).length
 totalOutOfStock=this.products.filter(p=>p.is_in_inventory===false).length
 
 selectedFilterRadioButton: string = 'all'
+
 @Input()
 searchText:string =''
 

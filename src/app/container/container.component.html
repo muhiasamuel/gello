@@ -11,5 +11,6 @@
     <button (click)="increamentValue()">+</button> 
     <input [value]="name" (input)="onNameChange($event)"><br> 
     <p>The user is: {{name}}</p> -->
-    <app-product-list [searchText]="searchText"></app-product-list>
+    <app-product-list [searchText]="searchText" #productListComponent></app-product-list>
+    <product-details *ngIf="productListComponent.selectedProduct"></product-details>
 </div>
