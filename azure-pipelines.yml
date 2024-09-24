@@ -15,6 +15,10 @@ variables:
   # Agent pool name
   agentPoolName: 'Gello'  # Replace 'Gello' with your actual self-hosted agent pool name
 
+  # Azure Web App name and resource group
+  webAppName: 'Gello'  # Replace with your Azure Web App name
+  resourceGroupName: 'E-Kart'  # Replace with your resource group name
+
 stages:
 - stage: Build
   displayName: Build and push stage
@@ -34,8 +38,25 @@ stages:
         tags: |
           $(tag)
     - task: DownloadBuildArtifacts@1
+      displayName: Download Build Artifacts
       inputs:
         buildType: 'current'
         downloadType: 'specific'
         downloadPath: '$(System.ArtifactsDirectory)'
 
+- stage: Deploy
+  displayName: Deploy to Azure Web Containers
+  jobs:
+  - job: Deploy
+    displayName: Deploying
+    pool:
+      name: $(agentPoolName)  # Using the variable for the agent pool name
+    steps:
+    - task: AzureWebApp@1
+      displayName: Deploy to Azure Web App for Containers
+      inputs:
+        azureSubscription: 'gello'  # Replace with your Azure subscription service connection name
+        appName: $(webAppName)  # Using the variable for web app name
+        imageName: $(containerRegistry)/$(imageRepository):$(tag)  # Image name from ACR
+        containerCommand: ''  # Leave empty if not using custom startup command
+        resourceGroupName: $(resourceGroupName)  # Using the variable for resource group name
