@@ -52,24 +52,24 @@ stages:
         ArtifactName: 'drop'
         publishLocation: 'Container'
 
-- stage: Deploy
-  displayName: Deploy to Azure Web Containers
-  jobs:
-  - job: Deploy
-    displayName: Deploying
-    pool:
-      name: $(agentPoolName)
-    steps:
-    - task: DownloadBuildArtifacts@1
-      displayName: Download Build Artifacts
-      inputs:
-        buildType: 'current'
-        downloadPath: '$(System.ArtifactsDirectory)'
-    - task: AzureWebApp@1
-      displayName: Deploy to Azure Web App for Containers
-      inputs:
-        azureSubscription: 'gello'
-        appName: $(webAppName)
-        imageName: $(containerRegistry)/$(imageRepository):$(tag)
-        containerCommand: ''
-        resourceGroupName: $(resourceGroupName)
+# - stage: Deploy
+#   displayName: Deploy to Azure Web Containers
+#   jobs:
+#   - job: Deploy
+#     displayName: Deploying
+#     pool:
+#       name: $(agentPoolName)
+#     steps:
+#     - task: DownloadBuildArtifacts@1
+#       displayName: Download Build Artifacts
+#       inputs:
+#         buildType: 'current'
+#         downloadPath: '$(System.ArtifactsDirectory)'
+#     - task: AzureWebApp@1
+#       displayName: Deploy to Azure Web App for Containers
+#       inputs:
+#         azureSubscription: 'gello'
+#         appName: $(webAppName)
+#         imageName: $(containerRegistry)/$(imageRepository):$(tag)
+#         containerCommand: ''
+#         resourceGroupName: $(resourceGroupName)
