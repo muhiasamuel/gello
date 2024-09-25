@@ -21,7 +21,7 @@ jobs:
       - name: npm install, build, and test
         run: |
           npm install --legacy-peer-deps
-          npm run build -- --output-path=dist --configuration=production --base-href=/ --deploy-url=/
+          npm run build -- --configuration=production --base-href=/ --deploy-url=/
 
       - name: Zip artifact for deployment
         run: zip -r release.zip ./dist/*
