@@ -1,4 +1,4 @@
-name: Build and deploy Node.js app to Azure Web App - e-kart
+name: Build and deploy Angular app to Azure Web App - e-kart
 
 on:
   push:
@@ -21,12 +21,10 @@ jobs:
       - name: npm install, build, and test
         run: |
           npm install --legacy-peer-deps
-          npm run build --if-present
-          # npm run test --if-present || true  # Modify as needed
-        continue-on-error: false
+          npm run build -- --output-path=dist --configuration=production --base-href=/ --deploy-url=/
 
       - name: Zip artifact for deployment
-        run: zip -r release.zip . -x '*.git*' -x 'node_modules/*'
+        run: zip -r release.zip ./dist/*
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
