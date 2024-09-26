@@ -202,7 +202,7 @@ export class ProductListComponent {
       flavour: "Blackberry",
       origin: "USA",
       main_ingredient: "Blackberries",
-      image_url:"../../../assets/images/black berry jello.jpg",
+      image_url:"../../../assets/images/images/black_berry_jello.jpeg",
       is_in_inventory: false,
       items_left: 0,
       packaging: ["20g", "50g", "100g", "200g"],

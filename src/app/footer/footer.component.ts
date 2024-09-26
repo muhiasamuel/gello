@@ -6,5 +6,20 @@ import { Component } from '@angular/core';
   styleUrl: './footer.component.css'
 })
 export class FooterComponent {
+state:string = 'info'
 
+view(type:string){
+  if (type === "info") {
+    this.state = "info"
+  }
+  if (type === "Service" ) {
+    this.state = "Service"
+  } 
+  if (type === "Agreement" ) {
+    this.state = "Agreement"
+  } 
+  else {
+    this.state = "Privacy"
+  }
+}
 }
