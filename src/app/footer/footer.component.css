@@ -1,0 +1,11 @@
+.footer-container{
+    text-align: center;
+}
+.footer-header{
+    background-color: black;
+    color: white;
+    display: flex;
+    align-items: center;
+    
+    /* justify-content: space-evenly; */
+}

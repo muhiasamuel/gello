@@ -8,7 +8,7 @@
         <app-product 
         [product]="prod" 
         *ngIf="searchText === '' || prod.name.toLowerCase().includes(searchText) || prod.origin.toLowerCase().includes(searchText)" 
-        (click)="selectedProduct = prod" >
+        (click)="openProductDetailDialog(prod)" >
         </app-product>
     </ng-container>
 </div>

@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
+import { MatIconModule } from '@angular/material/icon';  // Import MatIconModule
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,12 +13,13 @@ import { ContainerComponent } from './container/container.component';
 import { SearchComponent } from './container/search/search.component';
 import { FormsModule } from '@angular/forms';
 import { ProductListComponent } from './container/product-list/product-list.component';
-import { ProductComponent } from './container/product-list/product/product.component';
+import { ProductComponent } from './container/product-list/product.component';
 import { FilterComponent } from './container/product-list/filter/filter.component';
-import { ProductDetailsComponent } from './container/product-details/product-details.component';
-import { SetBackgroundDirective } from './container/product-details/set-background.directive';
+import { ProductDetailsComponent } from './container/product-list/product-details.component';
 import { HighlightsDirective } from './container/Custom directive/highlights.directive';
-import { AppHoverDirective } from './container/Custom directive/app-hover.directive';
+import { SetBackgroundDirective } from './container/Custom directive/set-background.directive';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -33,15 +36,17 @@ import { AppHoverDirective } from './container/Custom directive/app-hover.direct
     ProductDetailsComponent,
     SetBackgroundDirective,
     HighlightsDirective,
-    AppHoverDirective
+    FooterComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    MatIconModule,
     FormsModule
   ],
   providers: [
-    provideClientHydration()
+    provideClientHydration(),
+    provideAnimationsAsync()
   ],
   bootstrap: [AppComponent]
 })

@@ -1,0 +1,50 @@
+<div class="container-fluid">
+<div class="ekart-product-info scroll">
+    <div class="ekart-product-detail-close">
+        <mat-icon (click)="closeDialog()">close</mat-icon>
+      </div>
+    <div class="ekart-product-image">
+        <img [src]="product.image_url">
+    </div>
+    <div class="ekart-product-detail">
+        <div class="ekart-product-detail-name">
+            <h4>{{product.name}}</h4>
+        </div>
+        <div class="ekart-product-detail-gbc">
+            <span SetBackground>{{product.flavor}}</span>
+        </div>
+        <div class="ekart-product-detail-price" style="padding: 5px 0px;border-bottom:#ccc 2px solid">
+            <p>
+                <b>Price Each Plate: </b>
+                <span style="background-color: red; color: white; font-size: 20px;">Ksh {{product.price_ksh}}</span><br>
+                <span style="background-color: green; color: white;">(exclusive delivery fees)</span>
+            </p>
+        </div>
+        <div class="ekart-product-detail-quantity">
+            <div style="padding: 5px 0px;border-bottom:#ccc 2px solid">
+                <p>Quantity Available</p>
+                <div *ngFor="let pack of product.packaging" class="quantity-box">
+                    <span class="quantity">{{ pack }}</span>
+                </div>
+            </div>
+            <div style="padding: 5px 0px;border-bottom: #ccc 2px solid">
+                <span>Country of Origin: {{product.origin}}</span>
+            </div>
+        </div>
+
+        <div class="ekart-product-detail-description">
+            <div style="padding: 5px 0px;border-bottom: #ccc 2px solid;">
+                <h5>Product Description</h5>
+                <p>{{product.description}}</p>
+            </div>
+        </div>
+    </div>
+    <div style="padding-top: 5px;" class="ekart-product-detail-cart">
+        <button class="add-to-cart" *ngIf="product.is_in_inventory;else notifyMe" apphover>Add to cart</button>
+        <ng-template #notifyMe>
+            <p>Not in stock.Notify me when available</p>
+            <button class="add-to-cart">Notify Me</button>
+        </ng-template>
+    </div>
+</div>
+</div>
