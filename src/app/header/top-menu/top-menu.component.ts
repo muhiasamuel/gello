@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ServiceService } from '../../Services/service.service';
 
 @Component({
   selector: 'app-top-menu',
@@ -6,5 +7,8 @@ import { Component } from '@angular/core';
   styleUrl: './top-menu.component.css'
 })
 export class TopMenuComponent {
-
+  signUp(){
+    let subService = new ServiceService
+    subService.subscribe('Yearly')
+  }
 }

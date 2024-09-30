@@ -12,14 +12,14 @@ import { MainMenuComponent } from './header/main-menu/main-menu.component';
 import { ContainerComponent } from './container/container.component';
 import { SearchComponent } from './container/search/search.component';
 import { FormsModule } from '@angular/forms';
-import { ProductListComponent } from './container/product-list/product-list.component';
-import { ProductComponent } from './container/product-list/product.component';
 import { FilterComponent } from './container/product-list/filter/filter.component';
-import { ProductDetailsComponent } from './container/product-list/product-details.component';
 import { HighlightsDirective } from './container/Custom directive/highlights.directive';
 import { SetBackgroundDirective } from './container/Custom directive/set-background.directive';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { FooterComponent } from './footer/footer.component';
+import { ProductListComponent } from './container/product-list/product-list/product-list.component';
+import { ProductDetailsComponent } from './container/product-list/product-details/product-details.component';
+import { ProductComponent } from './container/product-list/product/product.component';
 
 @NgModule({
   declarations: [

@@ -34,6 +34,8 @@
 .ekart-product-image{
     width: 100%;
     height: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
 }
 .ekart-product-name{
     font-size: 25px;

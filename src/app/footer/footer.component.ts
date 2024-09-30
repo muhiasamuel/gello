@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ServiceService } from '../Services/service.service';
 
 @Component({
   selector: 'app-footer',
@@ -21,5 +22,9 @@ view(type:string){
   else {
     this.state = "Privacy"
   }
+}
+onSubscribe(){
+  let subService = new ServiceService //instanciate the service class
+  subService.subscribe('monthly')
 }
 }

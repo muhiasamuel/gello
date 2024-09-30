@@ -1,8 +1,8 @@
 import { Input } from '@angular/core';
 import { Component } from '@angular/core';
-import { Product} from './../../Modals/Product'
 import { MatDialog } from '@angular/material/dialog';
-import { ProductDetailsComponent } from './product-details.component';
+import { ProductDetailsComponent } from '../product-details/product-details.component';
+
 
 @Component({
   selector: 'app-product-list',
@@ -20,7 +20,7 @@ export class ProductListComponent {
       flavour: "Strawberry",
       origin: "USA",
       main_ingredient: "Strawberries",
-      image_url: "../../../assets/images/images/rasberry jello.jpg",
+      image_url: "../../../assets/images/images/strawberry jello.jfif",
       is_in_inventory: true,
       items_left: 50,
       packaging: ["20g", "50g", "100g", "200g"],
@@ -85,7 +85,7 @@ export class ProductListComponent {
       flavour: "Blueberry",
       origin: "Canada",
       main_ingredient: "Blueberries",
-      image_url: "../../../assets/images/images/blue-gelatin-dessert-on-white-260nw-428054227.webp",
+      image_url: "../../../assets/images/images/blue jelo.jpg",
       is_in_inventory: true,
       items_left: 35,
       packaging: ["20g", "50g", "100g", "200g"],
@@ -124,7 +124,7 @@ export class ProductListComponent {
       flavour: "Raspberry",
       origin: "USA",
       main_ingredient: "Raspberries",
-      image_url: "../../../assets/images/images/rasberry jello.jpg",
+      image_url: "../../../assets/images/images/strawberry jello.jfif",
       is_in_inventory: true,
       items_left: 45,
       packaging: ["20g", "50g", "100g", "200g"],
@@ -150,7 +150,7 @@ export class ProductListComponent {
       flavour: "Coconut",
       origin: "Thailand",
       main_ingredient: "Coconut",
-      image_url: "../../../assets/images/images/coconut jello.jpg",
+      image_url: "../../../assets/images/images/coconut jello.png",
       is_in_inventory: false,
       items_left: 0,
       packaging: ["20g", "50g", "100g", "200g"],
@@ -189,7 +189,7 @@ export class ProductListComponent {
       flavour: "Apple",
       origin: "USA",
       main_ingredient: "Apples",
-      image_url: "../../../assets/images/images/apple jello.jpg",
+      image_url: "../../../assets/images/images/apple jello.png",
       is_in_inventory: true,
       items_left: 60,
       packaging: ["20g", "50g", "100g", "200g"],

@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
-import { ProductListComponent } from './product-list/product-list.component';
+import { ProductListComponent } from './product-list/product-list/product-list.component';
+
 
 
 @Component({
