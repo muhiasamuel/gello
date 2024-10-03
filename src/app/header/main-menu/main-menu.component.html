@@ -1,3 +1,17 @@
-<div class="ekart-menu">
-    <a *ngFor="let menu of mainMenuArray">{{menu}}</a>
-</div>
+<button mat-button [matMenuTriggerFor]="menu" style="border: none; background-color: white;"><mat-icon>menu</mat-icon></button>
+<mat-menu #menu="matMenu">
+    <ng-container *ngFor="let menu of mainMenuArray" >
+        <button mat-menu-item 
+            (click)="onClick(menu.route)">
+            {{menu.name}}
+        </button>
+    </ng-container>
+</mat-menu>
+
+<!-- <div *ngIf="!hoveredMenu">
+    <app-main-menu></app-main-menu>
+</div> -->
+
+<!-- <div *ngIf="hoveredMenu">
+    <app-home></app-home>
+  </div> -->

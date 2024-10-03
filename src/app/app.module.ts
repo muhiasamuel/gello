@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { MatIconModule } from '@angular/material/icon';  // Import MatIconModule
+import {MatMenuModule} from '@angular/material/menu';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -20,6 +21,8 @@ import { FooterComponent } from './footer/footer.component';
 import { ProductListComponent } from './container/product-list/product-list/product-list.component';
 import { ProductDetailsComponent } from './container/product-list/product-details/product-details.component';
 import { ProductComponent } from './container/product-list/product/product.component';
+import { HomeComponent } from './home/home.component';
+import { LandingPageComponent } from './landing-page/landing-page.component';
 
 @NgModule({
   declarations: [
@@ -36,13 +39,17 @@ import { ProductComponent } from './container/product-list/product/product.compo
     ProductDetailsComponent,
     SetBackgroundDirective,
     HighlightsDirective,
-    FooterComponent
+    FooterComponent,
+    HomeComponent,
+    LandingPageComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     MatIconModule,
-    FormsModule
+    FormsModule,
+    MatMenuModule,
+
   ],
   providers: [
     provideClientHydration(),
