@@ -1,11 +1,34 @@
-.footer-container{
-    text-align: center;
-}
-.footer-header{
-    background-color: black;
-    color: white;
-    display: flex;
-    align-items: center;
-    
-    /* justify-content: space-evenly; */
-}
+.footer {
+    background-color: #292b2c; /* Dark background color */
+    color: rgb(109, 199, 235); /* Text color */
+    padding: 20px 0; /* Top and bottom padding */
+  }
+  
+  .footer h4, .footer h5 {
+    margin-bottom: 15px;
+  }
+  
+  .footer p {
+    margin-bottom: 20px;
+  }
+  
+  .footer .list-unstyled {
+    padding: 0;
+    list-style: none;
+  }
+  
+  .footer a {
+    color: white; /* Link color */
+    text-decoration: none; /* Remove underline */
+    transition: color 0.3s ease; /* Transition for hover effect */
+  }
+  
+  .footer a:hover {
+    color: #e14e26; /* Change link color on hover */
+  }
+  
+  .social-icons img {
+    width: 30px; /* Size of social icons */
+    margin: 0 10px; /* Spacing between icons */
+  }
+  

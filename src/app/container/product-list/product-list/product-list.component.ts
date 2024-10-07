@@ -33,7 +33,7 @@ export class ProductListComponent {
       flavour: "Lime",
       origin: "USA",
       main_ingredient: "Limes",
-      image_url: "../../../assets/images/images/lime jello.jpg",
+      image_url: "../../../assets/images/images/green.jfif",
       is_in_inventory: true,
       items_left: 30,
       packaging: ["20g", "50g", "100g", "200g"],

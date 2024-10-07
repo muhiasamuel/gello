@@ -1,54 +1,36 @@
-<div class="footer-container mb-3">
-    <div class="footer-header d-flex align-items-center justify-content-center">
-        <a (click)="view('info')" class="text-white" style="text-decoration: none; font-weight: 500">Info</a>
-        <a (click)="view('Service')" class="text-white" style="text-decoration: none; font-weight: 500">Service</a>
-        <a (click)="view('Privacy')" class="text-white" style="text-decoration: none; font-weight: 500">Privacy</a>
-        <a (click)="view('Agreement')" class="text-white" style="text-decoration: none; font-weight: 500">UserAgreement</a>
+<hr>
+<footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col text-center">
+          <h4>Stay Wiggly!</h4>
+          <p>Your one-stop destination for all things Jello! Join us in our delicious adventure.</p>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-auto">
+          <h5>Quick Links</h5>
+          <ul class="list-unstyled">
+            <li><a href="/about">About Us</a></li>
+            <li><a href="/products">Our Products</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+            <li><a href="/blog">Jello Blog</a></li>
+          </ul>
+        </div>
+        <div class="col-auto">
+          <h5>Follow Us</h5>
+          <ul class="list-unstyled social-icons">
+            <li><a href="#" aria-label="Facebook"><img src="../../assets/images/images/facebook 2.png" alt="Twitter">Facebook</a></li>
+            <li><a href="#" aria-label="Twitter"><img src="../../assets/images/images/twitter.png" alt="Twitter">Twitter</a></li>
+            <li><a href="#" aria-label="Instagram"><img src="../../assets/images/images/instagram.png" alt="Instagram">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col text-center">
+          <p>&copy; 2024 Jello Lovers Inc. All Rights Reserved.</p>
+        </div>
+      </div>
     </div>
-
-    <div *ngIf="state == 'info'">
-        <a>Terms of services & Privacy Policy</a>
-        <p>
-            Welcome to Gelo, your go-to platform for showcasing a variety of delicious
-            jello products! By accessing or using our website, you agree to comply
-            with and be bound by the following Terms of Service. Please read these
-            terms carefully.
-        </p>
-    </div>
-
-    <div *ngIf="state == 'Service'">
-        <a>Terms of services & Privacy Policy</a>
-        <p>
-            Service Description: We provide a platform to showcase a wide variety of
-            jello products, including detailed information on pricing, ingredients,
-            and availability. Our services are for informational purposes only, and
-            purchases are subject to availability.
-        </p>
-    </div>
-
-    <div *ngIf="state == 'Privacy'">
-        <a>Terms of services & Privacy Policy</a>
-        <p>
-            We collect the following types of personal information: Contact
-            Information: Such as your name, email address, and phone number when you
-            fill out forms or contact us. Usage Data: Including your IP address,
-            browser type, pages viewed, and the date/time of your visit. Cookies:
-            Small files stored on your device that allow us to personalize your
-            experience.
-        </p>
-    </div>
-
-    <div *ngIf="state == 'Agreement'">
-        <a>Terms of services & Privacy Policy</a>
-        <p>
-            Certain features of the Site may require registration. You agree to
-            provide accurate, complete, and updated information when registering. You
-            are solely responsible for maintaining the confidentiality of your account
-            and password, and you are responsible for all activities that occur under
-            your account.
-        </p>
-    </div>
-    <div>
-        <button class=" btn btn-info" (click)="onSubscribe()">Subscribe</button>
-    </div>
-</div>
+  </footer>
+  
