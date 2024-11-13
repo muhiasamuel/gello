@@ -1,0 +1,14 @@
+.auth-wrapper {
+  min-height: 100vh;        /* Make the wrapper full height */
+  background-color: #f4f4f4; /* Optional: Set a background color */
+}
+.auth-content{
+  height: 100vh;
+}
+
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for better appearance */
+  border-radius: 8px;
+  background-color: #fff;
+  padding: 20px;
+}

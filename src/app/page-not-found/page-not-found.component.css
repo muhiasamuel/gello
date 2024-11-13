@@ -1,0 +1,13 @@
+
+.main {
+    background-image:
+    linear-gradient(to bottom, rgba(7, 14, 24, 0.52), rgba(3, 5, 2, 0.21), rgba(3, 5, 2, 0.11) ),
+    url('../../assets/images/images/404.jpg');
+    width: 100%;
+    background-position: center;  /* Centers the image */
+    background-repeat: no-repeat;
+    height: 100vh;
+    background-size: cover; 
+    color: white;
+    padding: 20px;
+}

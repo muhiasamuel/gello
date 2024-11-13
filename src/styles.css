@@ -15,8 +15,13 @@ body{
 a{
     text-decoration: none;   
     padding: 0 10px; 
-    color: #28282B;
+    color: #e04034;
     cursor: pointer;
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.active{
+    font-size: 18px;
+    font-weight: bold;
+    color: red;
+}
