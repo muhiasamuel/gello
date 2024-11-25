@@ -7,7 +7,7 @@ resources:
 variables:
   tag: $(Build.BuildId)
   dockerRegistryServiceConnection: dockerConnection  # Name of the Docker Hub connection
-  imageName: samuelmuhiya/my-angular-app  # Ensure this matches your Docker Hub repo name
+  imageName: samtec7856/my-angular-app  # Ensure this matches your Docker Hub repo name
 
 stages:
   - stage: Build
