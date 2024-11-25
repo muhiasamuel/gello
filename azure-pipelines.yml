@@ -1,30 +1,62 @@
-# Docker
-# Build a Docker image
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
+---
 trigger:
-- main
-
+  - main
 resources:
-- repo: self
-
+  - repo: self
 variables:
-  tag: '$(Build.BuildId)'
-
+  tag: $(Build.BuildId)
+  dockerRegistryServiceConnection: dockerConnection
+  imageName: my-angular-app
 stages:
-- stage: Build
-  displayName: Build image
-  jobs:
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: Hosted Agent
+  - stage: Build
+    displayName: Build Docker Image
+    jobs:
+      - job: Build
+        displayName: Build Docker Image
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: Checkout@1
+            displayName: Checkout code
+          - task: Docker@2
+            displayName: Build Docker Image
+            inputs:
+              command: build
+              dockerfile: $(Build.SourcesDirectory)/Dockerfile
+              tags: |
+                $(tag)  # Tag your image with the build ID
+                latest  # Optionally tag with 'latest'
+              buildContext: $(Build.SourcesDirectory)
+          - task: Docker@2
+            displayName: Push Docker Image to Registry
+            inputs:
+              command: push
+              containerRegistry: $(dockerRegistryServiceConnection)
+              repository: $(imageName)
+              tags: |
+                $(tag)
+                latest
+          - task: PublishPipelineArtifact@1
+            displayName: Publish Docker Image as Artifact
+            inputs:
+              targetPath: $(Build.SourcesDirectory)
+              artifact: docker-image
+  - stage: Release
+    displayName: Release Docker Image
+    jobs:
+      - job: Deploy
+        displayName: Deploy Docker Image
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: DownloadPipelineArtifact@2
+            displayName: Download Build Artifact
+            inputs:
+              artifactName: docker-image
+              targetPath: $(Pipeline.Workspace)/docker-image
+          - script: >
+              docker load -i $(Pipeline.Workspace)/docker-image/*.tar  # Assuming the
+              artifact is a tarball of the image
 
-    steps:
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-        tags: |
-          $(tag)
+              docker run -d -p 80:80 $(imageName):$(tag)  # Run the container (make sure port 80 is exposed)
+            displayName: Deploy Docker Image
