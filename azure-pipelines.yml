@@ -1,12 +1,14 @@
----
 trigger:
   - main
+
 resources:
   - repo: self
+
 variables:
   tag: $(Build.BuildId)
-  dockerRegistryServiceConnection: dockerConnection
-  imageName: my-angular-app
+  dockerRegistryServiceConnection: dockerConnection  # Name of the Docker Hub connection
+  imageName: samuelmuhiya/my-angular-app  # Ensure this matches your Docker Hub repo name
+
 stages:
   - stage: Build
     displayName: Build Docker Image
@@ -18,29 +20,29 @@ stages:
         steps:
           - task: Checkout@1
             displayName: Checkout code
+
+          # Build Docker image
           - task: Docker@2
             displayName: Build Docker Image
             inputs:
               command: build
               dockerfile: $(Build.SourcesDirectory)/Dockerfile
               tags: |
-                $(tag)  # Tag your image with the build ID
-                latest  # Optionally tag with 'latest'
+                $(tag)
+                latest
               buildContext: $(Build.SourcesDirectory)
+
+          # Push Docker image to Docker Hub
           - task: Docker@2
             displayName: Push Docker Image to Registry
             inputs:
               command: push
-              containerRegistry: $(dockerRegistryServiceConnection)
+              containerRegistry: $(dockerRegistryServiceConnection)  # Connects to Docker Hub
               repository: $(imageName)
               tags: |
                 $(tag)
                 latest
-          - task: PublishPipelineArtifact@1
-            displayName: Publish Docker Image as Artifact
-            inputs:
-              targetPath: $(Build.SourcesDirectory)
-              artifact: docker-image
+
   - stage: Release
     displayName: Release Docker Image
     jobs:
@@ -49,14 +51,8 @@ stages:
         pool:
           vmImage: ubuntu-latest
         steps:
-          - task: DownloadPipelineArtifact@2
-            displayName: Download Build Artifact
-            inputs:
-              artifactName: docker-image
-              targetPath: $(Pipeline.Workspace)/docker-image
-          - script: >
-              docker load -i $(Pipeline.Workspace)/docker-image/*.tar  # Assuming the
-              artifact is a tarball of the image
-
-              docker run -d -p 80:80 $(imageName):$(tag)  # Run the container (make sure port 80 is exposed)
+          # Deploy Docker image directly from Docker Hub (skip downloading if not necessary)
+          - script: |
+              docker pull $(imageName):$(tag)  # Pull the Docker image from Docker Hub
+              docker run -d -p 80:80 $(imageName):$(tag)  # Expose port 80 for web apps
             displayName: Deploy Docker Image
