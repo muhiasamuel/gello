@@ -16,7 +16,8 @@ stages:
       - job: Build
         displayName: Build Docker Image
         pool:
-          vmImage: ubuntu-latest
+          vmImage: Hosted Agent
+
         steps:
           - task: Checkout@1
             displayName: Checkout code
@@ -49,7 +50,8 @@ stages:
       - job: Deploy
         displayName: Deploy Docker Image
         pool:
-          vmImage: ubuntu-latest
+          vmImage: Hosted Agent
+
         steps:
           # Deploy Docker image directly from Docker Hub (skip downloading if not necessary)
           - script: |
