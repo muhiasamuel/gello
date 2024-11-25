@@ -17,7 +17,7 @@ stages:
         displayName: Build Docker Image
       
         steps:
-          - task: Checkout@1
+          - task: Checkout@2
             displayName: Checkout code
 
           # Build Docker image
