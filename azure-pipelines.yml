@@ -5,7 +5,7 @@ resources:
   - repo: self
 
 variables:
-  vmImage: 'ubuntu-latest'  # Define the pool here
+  vmImage: 'Hosted Agent'  # Define the pool here
 
 stages:
   - stage: Build
