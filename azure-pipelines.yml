@@ -15,9 +15,10 @@ stages:
     jobs:
       - job: Build
         displayName: Build Docker Image
-      
+        pool:
+          vmImageName: Hosted Agent
         steps:
-          - task: Checkout@2
+          - task: Checkout@1
             displayName: Checkout code
 
           # Build Docker image
@@ -48,7 +49,7 @@ stages:
       - job: Deploy
         displayName: Deploy Docker Image
         pool:
-          vmImage: Hosted Agent
+          vmImageName: Hosted Agent
 
         steps:
           # Deploy Docker image directly from Docker Hub (skip downloading if not necessary)
