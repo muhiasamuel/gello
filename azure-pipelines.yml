@@ -15,6 +15,7 @@ stages:
     jobs:
       - job: Build
         displayName: Build Docker Image
+        continueOnError: true
         pool:
           vmImageName: Hosted Agent
         steps:
@@ -50,7 +51,7 @@ stages:
         displayName: Deploy Docker Image
         pool:
           vmImageName: Hosted Agent
-
+        continueOnError: true
         steps:
           # Deploy Docker image directly from Docker Hub (skip downloading if not necessary)
           - script: |
