@@ -5,56 +5,59 @@ resources:
   - repo: self
 
 variables:
-  tag: $(Build.BuildId)
-  dockerRegistryServiceConnection: dockerConnection  # Name of the Docker Hub connection
-  imageName: samtec7856/my-angular-app  # Ensure this matches your Docker Hub repo name
+  vmImage: 'ubuntu-latest'  # Define the pool here
 
 stages:
   - stage: Build
-    displayName: Build Docker Image
+    displayName: Build Node Application
     jobs:
       - job: Build
-        displayName: Build Docker Image
-        continueOnError: true
+        displayName: Build Node Application
         pool:
-          vmImageName: 'Hosted Agent'
+          vmImage: $(vmImage)  # Use the variable for the pool
         steps:
+          # Checkout code
           - task: Checkout@1
-            displayName: Checkout code
+            displayName: Checkout Code
 
-          # Build Docker image
-          - task: Docker@2
-            displayName: Build Docker Image
+          # Set up Node.js environment
+          - task: UseNode@1
+            displayName: Set up Node.js
             inputs:
-              command: build
-              dockerfile: $(Build.SourcesDirectory)/Dockerfile
-              tags: |
-                $(tag)
-                latest
-              buildContext: $(Build.SourcesDirectory)
+              version: '16.x'  # Adjust to your Node.js version
 
-          # Push Docker image to Docker Hub
-          - task: Docker@2
-            displayName: Push Docker Image to Registry
-            inputs:
-              command: push
-              containerRegistry: $(dockerRegistryServiceConnection)  # Connects to Docker Hub
-              repository: $(imageName)
-              tags: |
-                $(tag)
-                latest
-
-  - stage: Release
-    displayName: Release Docker Image
-    jobs:
-      - job: Deploy
-        displayName: Deploy Docker Image
-        pool:
-          vmImageName: 'Hosted Agent'
-        continueOnError: true
-        steps:
-          # Deploy Docker image directly from Docker Hub (skip downloading if not necessary)
+          # Install dependencies
           - script: |
-              docker pull $(imageName):$(tag)  # Pull the Docker image from Docker Hub
-              docker run -d -p 80:80 $(imageName):$(tag)  # Expose port 80 for web apps
-            displayName: Deploy Docker Image
+              npm install
+            displayName: Install Dependencies
+
+          # Build the application
+          - script: |
+              npm run build
+            displayName: Build Application
+
+          # Publish artifact
+          - task: PublishBuildArtifacts@1
+            displayName: Publish Build Artifact
+            inputs:
+              pathToPublish: $(System.DefaultWorkingDirectory)/dist  # Adjust to your build output directory
+              artifactName: node-app
+              publishLocation: Container
+
+  - stage: Test
+    displayName: Run Tests
+    jobs:
+      - job: Test
+        displayName: Run Application Tests
+        pool:
+          vmImage: $(vmImage)  # Use the variable for the pool
+        steps:
+          # Install dependencies
+          - script: |
+              npm install
+            displayName: Install Dependencies
+
+          # Run tests
+          - script: |
+              npm test
+            displayName: Run Tests
