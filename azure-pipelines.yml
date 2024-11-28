@@ -107,7 +107,7 @@ stages:
           # Verify Docker image exists
           - script: |
               echo "Verifying if the Docker image exists with the tag $(dockerTag)..."
-              docker images | grep $(imageName):$(dockerTag) || exit 1
+              docker images | grep -w "$(imageName)" | grep -w "$(dockerTag)" || exit 1
             displayName: 'Verify Docker Image Exists'
 
           # Clean up dangling images after build (Optional)
