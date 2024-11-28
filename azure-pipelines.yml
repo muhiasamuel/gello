@@ -45,9 +45,9 @@ stages:
           #   displayName: Run Tests
 
           # Build the application
-          - script: |
-              npm run build
-            displayName: Build Application
+          # - script: |
+          #     npm run build
+          #   displayName: Build Application
 
   # Stage 2: Build Docker Image
   - stage: DockerBuild
