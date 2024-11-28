@@ -5,7 +5,7 @@ resources:
   - repo: self
 
 variables:
-  vmImage: 'Hosted Agent'  # Define the pool here
+  vmImage: 'ubuntu-latest'  # Use a valid agent image
 
 stages:
   - stage: Build
@@ -14,17 +14,16 @@ stages:
       - job: Build
         displayName: Build Node Application
         pool:
-          vmImage: $(vmImage)  # Use the variable for the pool
+          vmImage: $(vmImage)
         steps:
           # Checkout code
-          - task: Checkout@1
-            displayName: Checkout Code
+          - checkout: self
 
           # Set up Node.js environment
-          - task: UseNode@1
+          - task: NodeTool@0
             displayName: Set up Node.js
             inputs:
-              version: '16.x'  # Adjust to your Node.js version
+              versionSpec: '16.x'  # Adjust to your Node.js version
 
           # Install dependencies
           - script: |
@@ -46,12 +45,22 @@ stages:
 
   - stage: Test
     displayName: Run Tests
+    dependsOn: Build
     jobs:
       - job: Test
         displayName: Run Application Tests
         pool:
-          vmImage: $(vmImage)  # Use the variable for the pool
+          vmImage: $(vmImage)
         steps:
+          # Checkout code
+          - checkout: self
+
+          # Set up Node.js environment
+          - task: NodeTool@0
+            displayName: Set up Node.js
+            inputs:
+              versionSpec: '16.x'  # Adjust to your Node.js version
+
           # Install dependencies
           - script: |
               npm install
