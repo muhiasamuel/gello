@@ -111,6 +111,6 @@ stages:
           - task: PublishBuildArtifacts@1
             displayName: Drop Artifact for Release
             inputs:
-              pathToPublish: '$(System.DefaultWorkingDirectory)/dist'  # Adjust path to your build output
+              pathToPublish: '$(System.DefaultWorkingDirectory)/dist'  
               artifactName: 'release-artifact'
               publishLocation: Container
