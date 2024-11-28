@@ -78,15 +78,21 @@ stages:
                 $(imageName):latest
 
           # Push Docker image to Docker Hub
+          - script: echo $(imageName)
+            displayName: "Check Image Name"
+
           - task: Docker@2
             displayName: Push Docker Image
             inputs:
+
               containerRegistry: $(dockerHubServiceConnection)
               command: push
               tags: |
                 $(imageName):$(Build.BuildId)
                 $(imageName):latest
-
+          - script: |
+             docker images
+              displayName: "List Docker Images"
   # Stage 3: Publish artifact for release pipeline
   - stage: PublishArtifact
     displayName: Drop Artifact for Release
