@@ -124,7 +124,7 @@ stages:
               containerRegistry: $(dockerHubServiceConnection)
               repository: $(imageName)
               tags: |
-                latest
+                $(dockerTag)
 
   # Stage 3: Publish Docker Image Artifact (Optional)
   - stage: PublishArtifact
