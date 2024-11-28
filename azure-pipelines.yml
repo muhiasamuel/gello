@@ -6,20 +6,22 @@ resources:
 
 variables:
   vmImage: 'ubuntu-latest'
-  dockerHubServiceConnection: 'dockerConnection'
+  dockerHubServiceConnection: 'dockerConnection' # Update with your service connection name
   imageName: 'samtec7856/gello'
-  dockerTag: '$(Build.BuildId)'  # Use Build ID as the tag for versioning
+  dockerTag: '$(Build.BuildId)' # Unique tag for versioning
+  artifactName: 'docker-image-artifact'
 
 stages:
   # Stage 1: Build the application and Docker image
-  - stage: Build
-    displayName: set node environment
+  - stage: BuildAndPush
+    displayName: Build and Push Docker Image
     jobs:
-      - job: BuildAndDocker
-        displayName: Build Application and Docker Image
+      - job: BuildAndPush
+        displayName: Build and Push Docker Image
         pool:
           vmImage: $(vmImage)
         steps:
+          # Checkout source code
           - checkout: self
 
           # Set up Node.js environment
@@ -28,31 +30,11 @@ stages:
             inputs:
               versionSpec: '18.x'
 
-          # Verify Node.js version
-          - script: |
-              node -v
-              npm -v
-            displayName: Verify Node.js Version
-
-          # Install dependencies
+          # Install dependencies and build the application
           - script: |
               npm install
-            displayName: Install Dependencies
-
-          # Build the application
-          - script: |
               npm run build
-            displayName: Build Application
-            
-  - stage: buildDocker
-    displayName: Build Docker Image
-    jobs:
-      - job: BuildAndDocker
-        displayName: Build and Push Docker Image
-        pool:
-          vmImage: $(vmImage)
-        steps:
-          - checkout: self
+            displayName: Install Dependencies and Build Application
 
           # Log in to Docker Hub
           - task: Docker@2
@@ -61,26 +43,21 @@ stages:
               command: login
               containerRegistry: $(dockerHubServiceConnection)
 
-          # Display the image name and tag for debugging
-          - script: |
-              echo "Image Name: $(imageName)"
-              echo "Docker Tag: $(dockerTag)"
-            displayName: "Display Image Name and Tag"
-
-          # Build Docker image
+          # Build the Docker image
           - task: Docker@2
             displayName: Build Docker Image
             inputs:
               command: build
-              Dockerfile: ./Dockerfile  # Ensure the Dockerfile path is correct
+              Dockerfile: ./Dockerfile # Update path if needed
+              buildContext: .
               tags: |
                 $(imageName):$(dockerTag)
                 $(imageName):latest
 
-          # Verify the image exists locally
+          # Verify Docker image locally
           - script: |
-              docker images
-            displayName: "List Docker Images"
+              docker images | grep $(imageName)
+            displayName: Verify Docker Image
 
           # Push Docker image to Docker Hub
           - task: Docker@2
@@ -93,33 +70,36 @@ stages:
                 $(dockerTag)
                 latest
 
+          # Publish Docker image as an artifact for the release pipeline
+          - task: PublishPipelineArtifact@1
+            displayName: Publish Docker Image Artifact
+            inputs:
+              targetPath: $(Pipeline.Workspace) # Path where the image metadata is stored
+              artifact: $(artifactName)
 
-  # Stage 2: Publish Docker Image as Artifact (Optional)
-  - stage: PublishDockerImage
-    displayName: Publish Docker Image Artifact for Release
-    dependsOn: Build
-    jobs:
-      - job: PublishDockerImage
-        displayName: Publish Docker Image Artifact
-        pool:
-          vmImage: $(vmImage)
-        steps:
-          # You can publish the Docker image to an artifact registry, or pass it through for deployment.
-          - script: |
-              echo "Publishing Docker image as artifact"
-            displayName: Placeholder for Docker image artifact publish
-
-  # Stage 3: Deploy or Release Docker Image (if needed)
+  # Stage 2: Release Docker Image
   - stage: Release
     displayName: Release Docker Image
-    dependsOn: PublishDockerImage
+    dependsOn: BuildAndPush
     jobs:
       - job: ReleaseDockerImage
-        displayName: Deploy Docker Image
+        displayName: Release Docker Image
         pool:
           vmImage: $(vmImage)
         steps:
-          # This stage could contain steps for deploying or testing the Docker image.
+          # Download the published artifact
+          - task: DownloadPipelineArtifact@2
+            displayName: Download Docker Image Artifact
+            inputs:
+              artifact: $(artifactName)
+
+          # Log release information
           - script: |
               echo "Deploying Docker image $(imageName):$(dockerTag)"
+              echo "Artifact successfully downloaded."
+            displayName: Log Release Info
+
+          # Placeholder for deployment
+          - script: |
+              echo "Placeholder: Deploy Docker Image"
             displayName: Deploy Docker Image
