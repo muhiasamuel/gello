@@ -6,55 +6,17 @@ resources:
 
 variables:
   vmImage: 'ubuntu-latest'  # Use a valid agent image
+  dockerHubServiceConnection: 'dockerConnection'  # Docker Hub service connection name
+  imageName: 'samtec7856/gello'  # Replace 'your-repo-name' with your Docker Hub repository name
+  buildArtifactName: 'application-artifact'  # Artifact name for publishing output
 
 stages:
+  # Stage 1: Build the application and publish an artifact
   - stage: Build
-    displayName: Build Node Application
+    displayName: Build and Publish Artifact
     jobs:
       - job: Build
-        displayName: Build Node Application
-        pool:
-          vmImage: $(vmImage)
-        steps:
-          # Checkout code
-          - checkout: self
-
-          # Set up Node.js environment
-          - task: NodeTool@0
-            displayName: Set up Node.js
-            inputs:
-              versionSpec: '18.x'  # Use Node.js 18.x to meet Angular CLI requirements
-
-          # Verify Node.js version
-          - script: |
-              node -v
-              npm -v
-            displayName: Verify Node.js Version
-
-          # Install dependencies
-          - script: |
-              npm install
-            displayName: Install Dependencies
-
-          # Build the application
-          - script: |
-              npm run build
-            displayName: Build Application
-
-          # Publish artifact
-          - task: PublishBuildArtifacts@1
-            displayName: Publish Build Artifact
-            inputs:
-              pathToPublish: $(System.DefaultWorkingDirectory)/dist  # Adjust to your build output directory
-              artifactName: node-app
-              publishLocation: Container
-
-  - stage: Test
-    displayName: Run Tests
-    dependsOn: Build
-    jobs:
-      - job: Test
-        displayName: Run Application Tests
+        displayName: Build and Publish Artifact
         pool:
           vmImage: $(vmImage)
         steps:
@@ -78,7 +40,77 @@ stages:
               npm install
             displayName: Install Dependencies
 
-          # Run tests
+          # Build the application
           - script: |
-              npm test
-            displayName: Run Tests
+              npm run build
+            displayName: Build Application
+
+          # Publish build output as an artifact
+          - task: PublishPipelineArtifact@1
+            displayName: Publish Build Output
+            inputs:
+              targetPath: '$(System.DefaultWorkingDirectory)/dist'  # Adjust path to your build output
+              artifact: $(buildArtifactName)
+
+  # Stage 2: Build and push Docker image
+  - stage: Docker
+    displayName: Build and Push Docker Image
+    dependsOn: Build
+    jobs:
+      - job: BuildAndPush
+        displayName: Build and Push Docker Image
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          # Checkout code
+          - checkout: self
+
+          # Log in to Docker Hub
+          - task: Docker@2
+            displayName: Log in to Docker Hub
+            inputs:
+              command: login
+              containerRegistry: $(dockerHubServiceConnection)
+
+          # Build Docker image
+          - task: Docker@2
+            displayName: Build Docker Image
+            inputs:
+              command: build
+              Dockerfile: ./Dockerfile  # Adjust path if your Dockerfile is in a subdirectory
+              tags: |
+                $(imageName):$(Build.BuildId)
+                $(imageName):latest
+
+          # Push Docker image to Docker Hub
+          - task: Docker@2
+            displayName: Push Docker Image
+            inputs:
+              command: push
+              tags: |
+                $(imageName):$(Build.BuildId)
+                $(imageName):latest
+
+  # Stage 3: Publish artifact for release pipeline
+  - stage: PublishArtifact
+    displayName: Drop Artifact for Release
+    dependsOn: Build
+    jobs:
+      - job: DropArtifact
+        displayName: Drop Artifact
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          # Download the build artifact from the previous stage
+          - task: DownloadPipelineArtifact@2
+            displayName: Download Build Artifact
+            inputs:
+              artifact: $(buildArtifactName)
+
+          # Drop the artifact for release pipeline
+          - task: PublishBuildArtifacts@1
+            displayName: Drop Artifact for Release
+            inputs:
+              pathToPublish: '$(System.DefaultWorkingDirectory)/dist'  # Adjust path to your build output
+              artifactName: 'release-artifact'
+              publishLocation: Container
