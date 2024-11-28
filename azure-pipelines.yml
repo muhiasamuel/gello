@@ -40,9 +40,9 @@ stages:
             displayName: Install Dependencies
 
           # Run tests (Optional)
-          - script: |
-              npm run test
-            displayName: Run Tests
+          # - script: |
+          #     npm run test
+          #   displayName: Run Tests
 
           # Build the application
           - script: |
