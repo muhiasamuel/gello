@@ -74,27 +74,29 @@ stages:
               echo "Docker Tag: $(dockerTag)"
             displayName: Debug Image Name and Tag
 
-          # Build Docker image
+                    # Build Docker image
+          - task: Docker@2
+            displayName: Log in to Docker Hub
+            inputs:
+              command: login
+              containerRegistry: $(dockerHubServiceConnection)
+
           - task: Docker@2
             displayName: Build Docker Image
             inputs:
               command: build
-              Dockerfile: ./Dockerfile  # Ensure the Dockerfile path is correct
+              Dockerfile: ./Dockerfile
               tags: |
                 $(imageName):$(dockerTag)
                 $(imageName):latest
 
-          # List all Docker images
           - script: |
+              echo "Listing Docker images:"
               docker images
-            displayName: List All Docker Images
+              echo "Checking if $(imageName):$(dockerTag) exists:"
+              docker images | grep "$(imageName)"
+            displayName: Verify Docker Image Exists
 
-          # Verify Docker image exists locally
-          - script: |
-              docker images | grep $(imageName) || echo "Image not found. Check build and tag steps."
-            displayName: Verify Docker Image with Debugging
-
-          # Push Docker image to Docker Hub
           - task: Docker@2
             displayName: Push Docker Image
             inputs:
