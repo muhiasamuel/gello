@@ -136,10 +136,12 @@ stages:
         pool:
           vmImage: $(vmImage)
         steps:
-          # Save the Docker image SHA or metadata as an artifact
+          # Pull and Save the Docker image SHA or metadata as an artifact
           - script: |
+              echo "Pulling Docker image $(imageName):$(dockerTag)..."
+              docker pull $(imageName):$(dockerTag)
               echo "Saving Docker image information..."
-              docker inspect $(imageName):$(dockerTag) > image-metadata.json
+              docker inspect $(imageName):$(dockerTag) > $(Pipeline.Workspace)/image-metadata.json
             displayName: Save Docker Image Metadata
 
           - task: PublishBuildArtifacts@1
