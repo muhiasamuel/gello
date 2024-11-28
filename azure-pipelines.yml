@@ -23,7 +23,13 @@ stages:
           - task: NodeTool@0
             displayName: Set up Node.js
             inputs:
-              versionSpec: '16.x'  # Adjust to your Node.js version
+              versionSpec: '18.x'  # Use Node.js 18.x to meet Angular CLI requirements
+
+          # Verify Node.js version
+          - script: |
+              node -v
+              npm -v
+            displayName: Verify Node.js Version
 
           # Install dependencies
           - script: |
@@ -59,7 +65,13 @@ stages:
           - task: NodeTool@0
             displayName: Set up Node.js
             inputs:
-              versionSpec: '16.x'  # Adjust to your Node.js version
+              versionSpec: '18.x'
+
+          # Verify Node.js version
+          - script: |
+              node -v
+              npm -v
+            displayName: Verify Node.js Version
 
           # Install dependencies
           - script: |
