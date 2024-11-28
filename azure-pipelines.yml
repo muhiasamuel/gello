@@ -13,7 +13,7 @@ variables:
 stages:
   # Stage 1: Build the application and Docker image
   - stage: Build
-    displayName: Build and Docker Image
+    displayName: set node environment
     jobs:
       - job: BuildAndDocker
         displayName: Build Application and Docker Image
@@ -43,6 +43,16 @@ stages:
           - script: |
               npm run build
             displayName: Build Application
+            
+  - stage: buildDocker
+    displayName: Build Docker Image
+    jobs:
+      - job: BuildAndDocker
+        displayName: Build and Push Docker Image
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - checkout: self
 
           # Log in to Docker Hub
           - task: Docker@2
@@ -51,15 +61,26 @@ stages:
               command: login
               containerRegistry: $(dockerHubServiceConnection)
 
+          # Display the image name and tag for debugging
+          - script: |
+              echo "Image Name: $(imageName)"
+              echo "Docker Tag: $(dockerTag)"
+            displayName: "Display Image Name and Tag"
+
           # Build Docker image
           - task: Docker@2
             displayName: Build Docker Image
             inputs:
               command: build
-              Dockerfile: ./Dockerfile
+              Dockerfile: ./Dockerfile  # Ensure the Dockerfile path is correct
               tags: |
                 $(imageName):$(dockerTag)
                 $(imageName):latest
+
+          # Verify the image exists locally
+          - script: |
+              docker images
+            displayName: "List Docker Images"
 
           # Push Docker image to Docker Hub
           - task: Docker@2
@@ -71,6 +92,7 @@ stages:
               tags: |
                 $(dockerTag)
                 latest
+
 
   # Stage 2: Publish Docker Image as Artifact (Optional)
   - stage: PublishDockerImage
