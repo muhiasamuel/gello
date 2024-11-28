@@ -5,10 +5,10 @@ resources:
   - repo: self
 
 variables:
-  vmImage: 'ubuntu-latest'  # Use a valid agent image
-  dockerHubServiceConnection: 'dockerConnection'  # Docker Hub service connection name
-  imageName: 'samtec7856/gello'  # Replace 'your-repo-name' with your Docker Hub repository name
-  buildArtifactName: 'application-artifact'  # Artifact name for publishing output
+  vmImage: 'ubuntu-latest'
+  dockerHubServiceConnection: 'dockerConnection'
+  imageName: 'samtec7856/gello'
+  buildArtifactName: 'application-artifact'
 
 stages:
   # Stage 1: Build the application and publish an artifact
@@ -20,34 +20,35 @@ stages:
         pool:
           vmImage: $(vmImage)
         steps:
-          # Checkout code
           - checkout: self
 
-          # Set up Node.js environment
           - task: NodeTool@0
             displayName: Set up Node.js
             inputs:
               versionSpec: '18.x'
 
-          # Verify Node.js version
           - script: |
               node -v
               npm -v
             displayName: Verify Node.js Version
 
-          # Install dependencies
           - script: |
               npm install
             displayName: Install Dependencies
 
-          # Build the application
           - script: |
               npm run build
             displayName: Build Application
 
-       
+          # Publish Build Artifact
+          - task: PublishBuildArtifacts@1
+            displayName: Publish Build Artifact
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/dist'  # Ensure this is the correct output path
+              ArtifactName: 'application-artifact'
+              publishLocation: 'Container'
 
-  # Stage 2: Build and push Docker image
+  # Stage 2: Build and Push Docker Image
   - stage: Docker
     displayName: Build and Push Docker Image
     dependsOn: Build
@@ -57,39 +58,37 @@ stages:
         pool:
           vmImage: $(vmImage)
         steps:
-          # Checkout code
           - checkout: self
 
-          # Log in to Docker Hub
           - task: Docker@2
             displayName: Log in to Docker Hub
             inputs:
               command: login
               containerRegistry: $(dockerHubServiceConnection)
 
-          # Build Docker image
           - task: Docker@2
             displayName: Build Docker Image
             inputs:
               command: build
-              Dockerfile: ./Dockerfile  # Adjust path if your Dockerfile is in a subdirectory
+              Dockerfile: ./Dockerfile
               tags: |
-                $(Build.BuildId)
+                $(imageName):$(Build.BuildId)
+                $(imageName):latest
 
-          # Push Docker image to Docker Hub
-          - script: echo $(imageName)
-            displayName: "Check Image Name"
+          - script: |
+              docker images
+            displayName: Verify Docker Image
 
           - task: Docker@2
             displayName: Push Docker Image
             inputs:
-
               containerRegistry: $(dockerHubServiceConnection)
               repository: $(imageName)
               command: push
-              tags: |              
+              tags: |
                 $(Build.BuildId)
-  # Stage 3: Publish artifact for release pipeline
+
+  # Stage 3: Publish Artifact for Release Pipeline
   - stage: PublishArtifact
     displayName: Drop Artifact for Release
     dependsOn: Build
@@ -99,16 +98,14 @@ stages:
         pool:
           vmImage: $(vmImage)
         steps:
-          # Download the build artifact from the previous stage
           - task: DownloadPipelineArtifact@2
             displayName: Download Build Artifact
             inputs:
-              artifact: $(buildArtifactName)
+              artifactName: 'application-artifact'
 
-          # Drop the artifact for release pipeline
           - task: PublishBuildArtifacts@1
             displayName: Drop Artifact for Release
             inputs:
-              pathToPublish: '$(System.DefaultWorkingDirectory)/dist'  
+              pathToPublish: '$(System.DefaultWorkingDirectory)'
               artifactName: 'release-artifact'
               publishLocation: Container
