@@ -74,7 +74,7 @@ stages:
               command: build
               Dockerfile: ./Dockerfile  # Adjust path if your Dockerfile is in a subdirectory
               tags: |
-                $(imageName):$(Build.BuildId)
+                $(Build.BuildId)
 
           # Push Docker image to Docker Hub
           - script: echo $(imageName)
@@ -87,8 +87,8 @@ stages:
               containerRegistry: $(dockerHubServiceConnection)
               repository: $(imageName)
               command: push
-              tags: |
-                $(imageName):$(Build.BuildId)
+              tags: |              
+                $(Build.BuildId)
   # Stage 3: Publish artifact for release pipeline
   - stage: PublishArtifact
     displayName: Drop Artifact for Release
