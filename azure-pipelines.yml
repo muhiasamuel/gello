@@ -8,104 +8,96 @@ variables:
   vmImage: 'ubuntu-latest'
   dockerHubServiceConnection: 'dockerConnection'
   imageName: 'samtec7856/gello'
-  buildArtifactName: 'application-artifact'
+  dockerTag: '$(Build.BuildId)'  # Use Build ID as the tag for versioning
 
 stages:
-  # Stage 1: Build the application and publish an artifact
+  # Stage 1: Build the application and Docker image
   - stage: Build
-    displayName: Build and Publish Artifact
+    displayName: Build and Docker Image
     jobs:
-      - job: Build
-        displayName: Build and Publish Artifact
+      - job: BuildAndDocker
+        displayName: Build Application and Docker Image
         pool:
           vmImage: $(vmImage)
         steps:
           - checkout: self
 
+          # Set up Node.js environment
           - task: NodeTool@0
             displayName: Set up Node.js
             inputs:
               versionSpec: '18.x'
 
+          # Verify Node.js version
           - script: |
               node -v
               npm -v
             displayName: Verify Node.js Version
 
+          # Install dependencies
           - script: |
               npm install
             displayName: Install Dependencies
 
+          # Build the application
           - script: |
               npm run build
             displayName: Build Application
 
-          # Publish Build Artifact
-          - task: PublishBuildArtifacts@1
-            displayName: Publish Build Artifact
-            inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/dist'  # Ensure this is the correct output path
-              ArtifactName: 'application-artifact'
-              publishLocation: 'Container'
-
-  # Stage 2: Build and Push Docker Image
-  - stage: Docker
-    displayName: Build and Push Docker Image
-    dependsOn: Build
-    jobs:
-      - job: BuildAndPush
-        displayName: Build and Push Docker Image
-        pool:
-          vmImage: $(vmImage)
-        steps:
-          - checkout: self
-
+          # Log in to Docker Hub
           - task: Docker@2
             displayName: Log in to Docker Hub
             inputs:
               command: login
               containerRegistry: $(dockerHubServiceConnection)
 
+          # Build Docker image
           - task: Docker@2
             displayName: Build Docker Image
             inputs:
               command: build
               Dockerfile: ./Dockerfile
               tags: |
-                $(imageName):$(Build.BuildId)
+                $(imageName):$(dockerTag)
                 $(imageName):latest
 
-          - script: |
-              docker images
-            displayName: Verify Docker Image
-
+          # Push Docker image to Docker Hub
           - task: Docker@2
             displayName: Push Docker Image
             inputs:
+              command: push
               containerRegistry: $(dockerHubServiceConnection)
               repository: $(imageName)
-              command: push
               tags: |
-                $(Build.BuildId)
+                $(dockerTag)
+                latest
 
-  # Stage 3: Publish Artifact for Release Pipeline
-  - stage: PublishArtifact
-    displayName: Drop Artifact for Release
+  # Stage 2: Publish Docker Image as Artifact (Optional)
+  - stage: PublishDockerImage
+    displayName: Publish Docker Image Artifact for Release
     dependsOn: Build
     jobs:
-      - job: DropArtifact
-        displayName: Drop Artifact
+      - job: PublishDockerImage
+        displayName: Publish Docker Image Artifact
         pool:
           vmImage: $(vmImage)
         steps:
-          - task: DownloadPipelineArtifact@2
-            displayName: Download Build Artifact
-            inputs:
-              artifactName: 'application-artifact'
+          # You can publish the Docker image to an artifact registry, or pass it through for deployment.
+          - script: |
+              echo "Publishing Docker image as artifact"
+            displayName: Placeholder for Docker image artifact publish
 
-          - task: PublishBuildArtifacts@1
-            displayName: Drop Artifact for Release
-            inputs:
-              pathToPublish: '$(System.DefaultWorkingDirectory)'
-              artifactName: 'release-artifact'
-              publishLocation: Container
+  # Stage 3: Deploy or Release Docker Image (if needed)
+  - stage: Release
+    displayName: Release Docker Image
+    dependsOn: PublishDockerImage
+    jobs:
+      - job: ReleaseDockerImage
+        displayName: Deploy Docker Image
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          # This stage could contain steps for deploying or testing the Docker image.
+          - script: |
+              echo "Deploying Docker image $(imageName):$(dockerTag)"
+            displayName: Deploy Docker Image
