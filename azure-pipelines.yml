@@ -74,22 +74,17 @@ stages:
               echo "Docker Tag: $(dockerTag)"
             displayName: Debug Image Name and Tag
 
-                    # Build Docker image
-          - task: Docker@2
-            displayName: Log in to Docker Hub
-            inputs:
-              command: login
-              containerRegistry: $(dockerHubServiceConnection)
-
+          # Build Docker image
           - task: Docker@2
             displayName: Build Docker Image
             inputs:
               command: build
-              Dockerfile: ./Dockerfile
+              Dockerfile: '$(Build.SourcesDirectory)/Dockerfile' # Ensure the Dockerfile path is correct
               tags: |
                 $(imageName):$(dockerTag)
                 $(imageName):latest
 
+          # Verify the Docker image exists locally
           - script: |
               echo "Listing Docker images:"
               docker images
@@ -97,6 +92,7 @@ stages:
               docker images | grep "$(imageName)"
             displayName: Verify Docker Image Exists
 
+          # Push Docker image
           - task: Docker@2
             displayName: Push Docker Image
             inputs:
@@ -126,8 +122,8 @@ stages:
           - task: PublishBuildArtifacts@1
             displayName: Publish Docker Image Artifact
             inputs:
-              pathToPublish: $(Pipeline.Workspace)
-              artifactName: DockerImage
+              pathToPublish: $(Pipeline.Workspace)/image-metadata.json
+              artifactName: DockerImageMetadata
               publishLocation: Container
 
   # Stage 4: Release or Deploy
