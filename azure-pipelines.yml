@@ -119,10 +119,12 @@ stages:
 
           # Push Docker image
       - job: PushDocker_image
-        displayName: Push Docker Image to registry
+        displayName: Push Docker Image to Registry
+        dependsOn: DockerBuildAndPush  # Ensure this job waits for the previous job
         steps:
         - task: Docker@2
           displayName: Push Docker Image
+          
           inputs:
             command: push
             containerRegistry: $(dockerHubServiceConnection)
