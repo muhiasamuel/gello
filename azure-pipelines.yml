@@ -52,12 +52,13 @@ stages:
   # Stage 2: Build Docker Image
   - stage: DockerBuild
     displayName: Build and Push Docker Image
+    pool:
+      vmImage: $(vmImage)
     dependsOn: []
     jobs:
       - job: DockerBuildAndPush
         displayName: Build and Push Docker Image
-        pool:
-          vmImage: $(vmImage)
+
         steps:
           - checkout: self
 
@@ -117,14 +118,17 @@ stages:
             displayName: 'Clean Up Dangling Images'
 
           # Push Docker image
-          - task: Docker@2
-            displayName: Push Docker Image
-            inputs:
-              command: push
-              containerRegistry: $(dockerHubServiceConnection)
-              repository: $(imageName)
-              tags: |
-                $(dockerTag)
+      - job: PushDocker_image
+        displayName: Push Docker Image to registry
+        steps:
+        - task: Docker@2
+          displayName: Push Docker Image
+          inputs:
+            command: push
+            containerRegistry: $(dockerHubServiceConnection)
+            repository: $(imageName)
+            tags: |
+              $(dockerTag)
 
   # Stage 3: Publish Docker Image Artifact (Optional)
   - stage: PublishArtifact
