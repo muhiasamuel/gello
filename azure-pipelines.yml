@@ -52,7 +52,7 @@ stages:
   # Stage 2: Build Docker Image
   - stage: DockerBuild
     displayName: Build and Push Docker Image
-    dependsOn: Build
+    dependsOn: []
     jobs:
       - job: DockerBuildAndPush
         displayName: Build and Push Docker Image
