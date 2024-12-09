@@ -58,7 +58,6 @@ stages:
     jobs:
       - job: DockerBuildAndPush
         displayName: Build and Push Docker Image
-
         steps:
           - checkout: self
 
@@ -118,19 +117,15 @@ stages:
             displayName: 'Clean Up Dangling Images'
 
           # Push Docker image
-      - job: PushDocker_image
-        displayName: Push Docker Image to Registry
-        dependsOn: DockerBuildAndPush  # Ensure this job waits for the previous job
-        steps:
-        - task: Docker@2
-          displayName: Push Docker Image
+          - task: Docker@2
+            displayName: Push Docker Image
           
-          inputs:
-            command: push
-            containerRegistry: $(dockerHubServiceConnection)
-            repository: $(imageName)
-            tags: |
-              $(dockerTag)
+            inputs:
+              command: push
+              containerRegistry: $(dockerHubServiceConnection)
+              repository: $(imageName)
+              tags: |
+                $(dockerTag)
 
   # Stage 3: Publish Docker Image Artifact (Optional)
   - stage: PublishArtifact
