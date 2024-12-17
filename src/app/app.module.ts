@@ -12,7 +12,6 @@ import { TopMenuComponent } from './header/top-menu/top-menu.component';
 import { MainMenuComponent } from './header/main-menu/main-menu.component';
 import { ContainerComponent } from './container/container.component';
 import { SearchComponent } from './container/search/search.component';
-import { FormsModule } from '@angular/forms';
 import { FilterComponent } from './container/product-list/filter/filter.component';
 import { HighlightsDirective } from './container/Custom directive/highlights.directive';
 import { SetBackgroundDirective } from './container/Custom directive/set-background.directive';
@@ -23,6 +22,14 @@ import { ProductDetailsComponent } from './container/product-list/product-detail
 import { ProductComponent } from './container/product-list/product/product.component';
 import { HomeComponent } from './home/home.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFireModule } from '@angular/fire/compat';
+import { environment} from './firebase/environmentFireBase';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SignInComponent } from './authentication/login/sign-in.component';
+import { AboutComponent } from './about/about.component';
+
 
 @NgModule({
   declarations: [
@@ -41,14 +48,20 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
     HighlightsDirective,
     FooterComponent,
     HomeComponent,
-    LandingPageComponent
+    LandingPageComponent,
+    PageNotFoundComponent,
+    SignInComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     MatIconModule,
     FormsModule,
+    ReactiveFormsModule,
     MatMenuModule,
+    AngularFireModule.initializeApp(environment),
+    AngularFireAuthModule
 
   ],
   providers: [

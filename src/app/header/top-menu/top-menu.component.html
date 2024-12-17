@@ -1,11 +1,8 @@
 <div class="container-fluid">
     <div class="ekart--top--bar">
-        <a href="#">Help</a>
-        <a href="#">Exchange & Returns</a>
-        <a href="#">Order Tracker</a>
-        <a href="#">Contacts</a>
-        <a href="#">SignUp / Login</a>
-        <button class="btn btn-info" (click)="signUp()">Subscribe</button>
+        <button *ngIf="authService.getuser" class="btn btn-secondary btn-lg btn-block rounded-pill"  [routerLink]="['sign-in']"> <mat-icon>person</mat-icon> login</button>
+        <button *ngIf="authService.getuser" class="btn btn-secondary btn-lg btn-block rounded-pill" [routerLink]="['sign-in']"[routerLink]="['sign-up']"> <mat-icon>person</mat-icon>SignUp</button>
+        <button *ngIf ="authService.getuser" type="button" class="btn btn-primary btn-block rounded-pill"routerLink="./home">LogOut</button>
     </div>
 </div>
 

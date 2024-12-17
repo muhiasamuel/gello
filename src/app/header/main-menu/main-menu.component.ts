@@ -10,8 +10,7 @@ export class MainMenuComponent {
   constructor(private router:Router){}
   mainMenuArray = [
     { name: 'Home', route: '/' },
-    { name: 'Categories', route: '/Categories' },
-    { name: 'Discounts', route: '/Discounts' },
+    { name: 'Products', route: '/product-list' },
     { name: 'About', route: '/About' },
     { name: 'Contact', route: '/Contact' }
   ];

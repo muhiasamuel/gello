@@ -8,21 +8,21 @@
         </div>
       </div>
       <div class="row justify-content-center">
-        <div class="col-auto">
+        <div class="col-auto" id="contact">
           <h5>Quick Links</h5>
           <ul class="list-unstyled">
-            <li><a href="/about">About Us</a></li>
-            <li><a href="/products">Our Products</a></li>
-            <li><a href="/contact">Contact Us</a></li>
-            <li><a href="/blog">Jello Blog</a></li>
+            <li><a routerLink="/about" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact:true}">About Us</a></li>
+            <li><a routerLink="/product-list" [routerLinkActive]="'active'"[routerLinkActiveOptions]="{exact:true}">Our Products</a></li>
+            <li><a routerLink="/contact" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact:true}">Contact Us: <strong>0100301243</strong></a></li>
+            <li><a routerLink="/blog" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact:true}">Jello Blog</a></li>
           </ul>
         </div>
         <div class="col-auto">
           <h5>Follow Us</h5>
           <ul class="list-unstyled social-icons">
-            <li><a href="#" aria-label="Facebook"><img src="../../assets/images/images/facebook 2.png" alt="Twitter">Facebook</a></li>
-            <li><a href="#" aria-label="Twitter"><img src="../../assets/images/images/twitter.png" alt="Twitter">Twitter</a></li>
-            <li><a href="#" aria-label="Instagram"><img src="../../assets/images/images/instagram.png" alt="Instagram">Instagram</a></li>
+            <li><a routerLink="#" aria-label="Facebook"><img src="../../assets/images/images/facebook 2.png" alt="Twitter">Facebook</a></li>
+            <li><a routerLink="#" aria-label="Twitter"><img src="../../assets/images/images/twitter.png" alt="Twitter">Twitter</a></li>
+            <li><a routerLink="#" aria-label="Instagram"><img src="../../assets/images/images/instagram.png" alt="Instagram">Instagram</a></li>
           </ul>
         </div>
       </div>

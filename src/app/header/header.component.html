@@ -1,9 +1,16 @@
-<div class="ekart--header">
-    <div class="ekart-logo">
+<div class="ekart--header d-flex">
+    <div class="ekart-logo d-flex align-items-center px-3">
         <!-- <img src="images/logo.jpeg"> -->
-        Gelly
         <app-main-menu></app-main-menu>
+        <span>Gelly</span>
     </div>
+    
+    <div class="align-items-center mt-2" >
+        <a routerLink="/" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact:true}">Home</a>
+        <a routerLink="/product-list" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact:true}">Product</a>
+        <a routerLink="/about" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact:true}">About</a>
+        <a href="/#contact"[routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact:true}">Contact</a>
+</div>
     <div class="ekart--header--nav">
        <!-- top-menu -->
         <app-top-menu></app-top-menu>
@@ -16,6 +23,5 @@
                 </button>
             </div> -->
         </div>
-        
     </div>
 </div>
