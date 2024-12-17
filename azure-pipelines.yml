@@ -1,75 +1,169 @@
 trigger:
-- main
+  - main
 
 resources:
-- repo: self
+  - repo: self
 
 variables:
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '1ee26717-9186-48e2-88ac-0dc5abbf27d9'
-  imageRepository: 'muhiasamuelgello'
-  containerRegistry: 'ekart.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  tag: '$(Build.BuildId)'
-
-  # Agent pool name
-  agentPoolName: 'Gello'  # Replace 'Gello' with your actual self-hosted agent pool name
-
-  # Azure Web App name and resource group
-  webAppName: 'Gello'  # Replace with your Azure Web App name
-  resourceGroupName: 'E-Kart'  # Replace with your resource group name
+  vmImage: 'ubuntu-latest'
+  dockerHubServiceConnection: 'dockerConnection'
+  imageName: 'samtec7856/gello'  # Ensure this matches your Docker Hub repository
+  dockerTag: '$(Build.BuildId)'  # Use Build ID as the tag for versioning
 
 stages:
-- stage: Build
-  displayName: Build and push stage
-  jobs:
-  - job: Build
-    displayName: Build
-    pool:
-      name: $(agentPoolName)
-    steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
-    - task: ArchiveFiles@2
-      displayName: 'Archive Files'
-      inputs:
-        rootFolderOrFile: '$(Build.SourcesDirectory)' 
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-        replaceExistingArchive: true
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifacts'
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'drop'
-        publishLocation: 'Container'
+  # Stage 1: Build and Test Application
+  - stage: Build
+    displayName: Build and Test Application
+    jobs:
+      - job: BuildApp
+        displayName: Build Node.js Application
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          - checkout: self
 
-# - stage: Deploy
-#   displayName: Deploy to Azure Web Containers
-#   jobs:
-#   - job: Deploy
-#     displayName: Deploying
-#     pool:
-#       name: $(agentPoolName)
-#     steps:
-#     - task: DownloadBuildArtifacts@1
-#       displayName: Download Build Artifacts
-#       inputs:
-#         buildType: 'current'
-#         downloadPath: '$(System.ArtifactsDirectory)'
-#     - task: AzureWebApp@1
-#       displayName: Deploy to Azure Web App for Containers
-#       inputs:
-#         azureSubscription: 'gello'
-#         appName: $(webAppName)
-#         imageName: $(containerRegistry)/$(imageRepository):$(tag)
-#         containerCommand: ''
-#         resourceGroupName: $(resourceGroupName)
+          # Set up Node.js environment
+          - task: NodeTool@0
+            displayName: Set up Node.js
+            inputs:
+              versionSpec: '18.x'
+
+          # Debug Node.js version
+          - script: |
+              node -v
+              npm -v
+            displayName: Verify Node.js and npm Versions
+
+          # Install dependencies
+          - script: |
+              npm install
+            displayName: Install Dependencies
+
+          # Run tests (Optional)
+          # - script: |
+          #     npm run test
+          #   displayName: Run Tests
+
+          # Build the application
+          # - script: |
+          #     npm run build
+          #   displayName: Build Application
+
+  # Stage 2: Build Docker Image
+  - stage: DockerBuild
+    displayName: Build and Push Docker Image
+    pool:
+      vmImage: $(vmImage)
+    dependsOn: []
+    jobs:
+      - job: DockerBuildAndPush
+        displayName: Build and Push Docker Image
+        steps:
+          - checkout: self
+
+          # Docker Login
+          - task: Docker@2
+            displayName: Log in to Docker Hub
+            inputs:
+              command: login
+              containerRegistry: $(dockerHubServiceConnection)
+
+          # Debug image name and tag
+          - script: |
+              echo "Image Name: $(imageName)"
+              echo "Docker Tag: $(dockerTag)"
+            displayName: Debug Image Name and Tag
+
+          # Build Docker image
+          - task: Docker@2
+            displayName: Build Docker Image
+            inputs:
+              command: build
+              Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'  # Ensure the Dockerfile path is correct
+              tags: |
+                $(imageName):$(dockerTag)
+                $(imageName):latest
+
+          # List Docker images to verify the build
+          - script: |
+              docker --version
+              echo "Listing Docker images after build:"
+              docker images
+            displayName: 'Check Docker Version and List Images'
+
+          # Tag Docker Image if Dangling
+          - script: |
+              IMAGE_ID=$(docker images --filter "dangling=true" -q)
+              if [ -n "$IMAGE_ID" ]; then
+                echo "Found dangling image, tagging it..."
+                docker tag $IMAGE_ID $(imageName):$(dockerTag)
+              else
+                echo "No dangling image found."
+              fi
+              echo "Listing Docker images after tagging:"
+              docker images
+            displayName: 'Tag Docker Image if Dangling'
+
+          # Verify Docker image exists
+          - script: |
+              echo "Verifying if the Docker image exists with the tag $(dockerTag)..."
+              docker images | grep -w "$(imageName)" | grep -w "$(dockerTag)" || exit 1
+            displayName: 'Verify Docker Image Exists'
+
+          # Clean up dangling images after build (Optional)
+          - script: |
+              echo "Cleaning up dangling images..."
+              docker image prune -f
+            displayName: 'Clean Up Dangling Images'
+
+          # Push Docker image
+          - task: Docker@2
+            displayName: Push Docker Image
+          
+            inputs:
+              command: push
+              containerRegistry: $(dockerHubServiceConnection)
+              repository: $(imageName)
+              tags: |
+                $(dockerTag)
+
+  # Stage 3: Publish Docker Image Artifact (Optional)
+  - stage: PublishArtifact
+    displayName: Publish Docker Image as Artifact
+    dependsOn: DockerBuild
+    jobs:
+      - job: PublishDockerArtifact
+        displayName: Publish Docker Artifact
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          # Pull and Save the Docker image SHA or metadata as an artifact
+          - script: |
+              echo "Pulling Docker image $(imageName):$(dockerTag)..."
+              docker pull $(imageName):$(dockerTag)
+              echo "Saving Docker image information..."
+              docker inspect $(imageName):$(dockerTag) > $(Pipeline.Workspace)/image-metadata.json
+            displayName: Save Docker Image Metadata
+
+          - task: PublishBuildArtifacts@1
+            displayName: Publish Docker Image Artifact
+            inputs:
+              pathToPublish: $(Pipeline.Workspace)/image-metadata.json
+              artifactName: DockerImageMetadata
+              publishLocation: Container
+
+  # Stage 4: Release or Deploy
+  - stage: Release
+    displayName: Deploy Docker Image
+    dependsOn: PublishArtifact
+    jobs:
+      - job: DeployDocker
+        displayName: Deploy Docker Image
+        pool:
+          vmImage: $(vmImage)
+        steps:
+          # Deploy the Docker image (customize as per your deployment process)
+          - script: |
+              echo "Deploying Docker image $(imageName):$(dockerTag)"
+              # Add deployment logic here
+            displayName: Deploy Docker Image
