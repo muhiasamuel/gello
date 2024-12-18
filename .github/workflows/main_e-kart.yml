@@ -21,16 +21,16 @@ jobs:
       - name: Install dependencies and build Angular app
         run: |
           npm install --legacy-peer-deps
-          npm run build -- --configuration=production --output-path=dist --base-href=/gello/ --deploy-url=/
+          npm run build -- --configuration=production --output-path=dist/gello --base-href=/gello/ --deploy-url=/
 
       - name: Verify build output
-        run: ls -R dist
+        run: ls -R dist/gello  # Ensure the build output is in dist/gello
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: gello
-          path: dist
+          path: dist/gello  # Upload the correct folder
 
   deploy:
     runs-on: ubuntu-latest
@@ -49,7 +49,8 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: dist/browser  # Point to the correct folder
+          folder: dist/gello  # Point to the correct folder
+
 
 
 # name: Build and deploy Angular app to Azure Web App - e-kart
