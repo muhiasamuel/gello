@@ -49,7 +49,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: .  # Point to the correct folder (default output folder)
+          folder: ./  # Point to the correct folder (default output folder)
 
 
 
