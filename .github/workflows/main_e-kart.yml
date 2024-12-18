@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: gello
-          path: dist/gello  # Upload the default build folder
+          path: dist/shopping  # Upload the default build folder
 
   deploy:
     runs-on: ubuntu-latest
