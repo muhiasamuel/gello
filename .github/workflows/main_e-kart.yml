@@ -24,7 +24,7 @@ jobs:
           npm run build -- --configuration=production --base-href=/ --deploy-url=/
 
       - name: Verify build output
-        run: ls -R dist/gello  # Verify that the build output is in dist/gello (or the default output folder)
+        run: ls -R dist/shopping  # Verify that the build output is in dist/gello (or the default output folder)
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -49,7 +49,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: dist/gello  # Point to the correct folder (default output folder)
+          folder: dist/shopping  # Point to the correct folder (default output folder)
 
 
 
