@@ -24,19 +24,26 @@ jobs:
           npm run build -- --configuration=production --base-href=/ --deploy-url=/
 
       - name: Verify build output
-        run: ls -R dist/shopping  # Verify that the build output is in dist/gello (or the default output folder)
+        run: ls -R dist/gello  # Verify that the build output is in dist/gello (or the default output folder)
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: gello
-          path: dist/shopping  # Upload the default build folder
+          path: dist/gello  # Upload the build folder
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
+      - name: Checkout repository again (required for Git operations)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./gello  # You can use this to specify a custom directory for the checkout
+
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
@@ -45,11 +52,17 @@ jobs:
       - name: Verify artifact content
         run: ls -R
 
+      - name: Set up Git configuration
+        run: |
+          git config user.name "muhiasamuel"
+          git config user.email "smuhia622@gmail.com.com"
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: ./  # Point to the correct folder (default output folder)
+          folder: ./  # Point to the correct folder with the built app
+
 
 
 
